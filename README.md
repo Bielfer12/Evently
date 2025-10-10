@@ -23,5 +23,5 @@ O **Evently** surge como uma solução backend que organiza e disponibiliza esse
 ## 👥 Integrantes do Grupo
 - **Gabriel Casagrande**  - <a href="https://github.com/Bielfer12">Bielfer12</a><br>
 - **Guilherme Rabello Carrer** - <a href="https://github.com/GuilhermeCarrer">GuilhermeCarrer</a><br>
-- **Jean Vitor Vieira** - <a href="https://github.com/jeanvitorvieira">GuilhermeCarrer</a><br>
+- **Jean Vitor Vieira** - <a href="https://github.com/jeanvitorvieira">Jeanvitorvieira</a><br>
 
