@@ -25,3 +25,9 @@ O **Evently** surge como uma solução backend que organiza e disponibiliza esse
 - **Guilherme Rabello Carrer** - <a href="https://github.com/GuilhermeCarrer">GuilhermeCarrer</a><br>
 - **Jean Vitor Vieira** - <a href="https://github.com/jeanvitorvieira">Jeanvitorvieira</a><br>
 
+---
+
+## 🗄️ Banco de Dados – [PostgreSQL](https://www.postgresql.org/)
+O banco Evently gerencia informações de eventos, organizadores e participantes.
+Ele foi modelado de forma informativa, sem controle financeiro, priorizando relações entre usuários, eventos e interações como comentários e favoritos.
+Inclui tabelas para organizadores, locais, categorias, eventos, programações, etiquetas, usuários, participações e imagens, garantindo integridade com chaves UUID e auditoria de criação e atualização.
