@@ -99,10 +99,10 @@ CREATE TABLE ingressos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   id_evento UUID REFERENCES eventos(id) ON DELETE CASCADE,
   nome TEXT NOT NULL,
-  preco numeric(10,2) DEFAULT 0,
-  quantidade integer,
-  vendas_inicio timestamptz,
-  vendas_fim timestamptz,
+  --preco numeric(10,2) DEFAULT 0,
+  --quantidade integer,
+  --vendas_inicio timestamptz,
+  --vendas_fim timestamptz,
   criado_em timestamptz DEFAULT now()
 );
 
@@ -112,8 +112,6 @@ CREATE TABLE participacoes (
   id_usuario UUID REFERENCES usuarios(id) ON DELETE SET NULL,
   id_ingresso UUID REFERENCES ingressos(id) ON DELETE SET NULL,
   id_evento UUID REFERENCES eventos(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'reservado', -- reservado|pago|cancelado|checkin
-  comprado_em timestamptz,
   criado_em timestamptz DEFAULT now()
 );
 
@@ -137,5 +135,14 @@ CREATE TABLE imagens_evento (
   descricao_alternativa TEXT,
   capa boolean DEFAULT false,
   criado_em timestamptz DEFAULT now()
+);
+
+--FAVORITOS
+CREATE TABLE favoritos (
+  id_usuario UUID REFERENCES usuarios(id) ON DELETE CASCADE, -- se o usuário for excluído, apaga os favoritos dele
+  id_evento UUID REFERENCES eventos(id) ON DELETE CASCADE,   -- se o evento for excluído, remove dos favoritos
+  criado_em timestamptz DEFAULT now(), -- data em que foi favoritado
+  tirado_em timestamptz 			   -- data que foi desfavoritado | a fins de controle, se nao curtir tirar. 
+  PRIMARY KEY (id_usuario, id_evento)
 );
 
