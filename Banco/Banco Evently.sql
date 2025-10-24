@@ -13,8 +13,7 @@ CREATE TABLE organizadores (
   site TEXT,
   --Isso é para ter controle de historico de registros. 
   criado_em timestamptz DEFAULT now(),
-  atualizado_em timestamptz DEFAULT now(),
-  excluido_em timestamptz
+  atualizado_em timestamptz,
 );
 
 --Locais
@@ -28,8 +27,7 @@ CREATE TABLE locais (
   pais TEXT,
   capacidade integer,
   criado_em timestamptz DEFAULT now(),
-  atualizado_em timestamptz DEFAULT now(),
-  excluido_em timestamptz
+  atualizado_em timestamptz,
 );
 
 --Categorias
@@ -55,8 +53,7 @@ CREATE TABLE eventos (
   metadados JSONB,
   criado_por UUID,
   criado_em timestamptz DEFAULT now(),
-  atualizado_em timestamptz DEFAULT now(),
-  excluido_em timestamptz
+  atualizado_em timestamptz,
 );
 
 --Programacao eventos(DE TEMPO EM TEMPO ROCK IN RIO LONDRES AS 15H, DAI PUXA O EVENTO)
@@ -69,7 +66,7 @@ CREATE TABLE programacoes_evento (
   descricao TEXT,
   capacidade integer,
   criado_em timestamptz DEFAULT now(),
-  atualizado_em timestamptz DEFAULT now()
+  atualizado_em timestamptz
 );
 
 -- ETIQUETAS (tags)
@@ -125,7 +122,6 @@ CREATE TABLE comentarios (
   conteudo TEXT NOT NULL,
   avaliacao smallint,
   criado_em timestamptz DEFAULT now(),
-  excluido_em timestamptz
 );
 
 -- IMAGENS DO EVENTO
@@ -146,5 +142,6 @@ CREATE TABLE favoritos (
   -- tirado_em timestamptz 			   -- data que foi desfavoritado | a fins de controle, se nao curtir tirar. 
   PRIMARY KEY (id_usuario, id_evento)
 );
+
 
 
