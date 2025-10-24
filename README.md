@@ -20,6 +20,18 @@ O **Evently** surge como uma solução backend que organiza e disponibiliza esse
 
 ---
 
+## 🧩 Modelagem de Dados e Funcionalidades da API
+
+O **documento complementar** detalha a **modelagem de dados** e as **principais funcionalidades** da API **Evently**, apresentando a estrutura completa do banco de dados e os recursos de autenticação e integração.  
+
+O modelo inclui entidades como **Eventos**, **Organizadores**, **Locais**, **Usuários**, **Categorias**, **Participações**, **Comentários**, **Favoritos** e **Imagens**, todas estruturadas com **UUIDs**, auditoria de criação e atualização, e relacionamentos normalizados.  
+
+A API segue o padrão **RESTful**, oferecendo **endpoints CRUD** para cada entidade, **autenticação JWT**, uso de **DTOs** para entrada e saída de dados, e suporte a **paginação**, **ordenação** e **filtros** nas listagens.  
+A documentação interativa está disponível via **Swagger** no endpoint `/api-docs`.  
+
+📄 [**Abrir Documentação Completa (PDF)**](sandbox:/mnt/data/EventlyDocumentacao_2.pdf)
+
+
 ## 👥 Integrantes do Grupo
 - **Gabriel Casagrande**  - <a href="https://github.com/Bielfer12">Bielfer12</a><br>
 - **Guilherme Rabello Carrer** - <a href="https://github.com/GuilhermeCarrer">GuilhermeCarrer</a><br>
