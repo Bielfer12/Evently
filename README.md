@@ -29,7 +29,7 @@ O modelo inclui entidades como **Eventos**, **Organizadores**, **Locais**, **Usu
 A API segue o padrão **RESTful**, oferecendo **endpoints CRUD** para cada entidade, **autenticação JWT**, uso de **DTOs** para entrada e saída de dados, e suporte a **paginação**, **ordenação** e **filtros** nas listagens.  
 A documentação interativa está disponível via **Swagger** no endpoint `/api-docs`.  
 
-📄 [**Abrir Documentação Completa (PDF)**](sandbox:/mnt/data/EventlyDocumentacao_2.pdf)
+📄 [**Abrir Documentação Completa (PDF)**](documentacao/EventlyDocumentacao_2.pdf)
 
 
 ## 👥 Integrantes do Grupo
