@@ -42,8 +42,9 @@ CREATE TABLE categorias (
 --Eventos(FIXO, COMO ROCK IN RIO)
 CREATE TABLE eventos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  id_organizador UUID REFERENCES organizadores(id) ON DELETE SET NULL,
-  id_local UUID REFERENCES locais(id) ON DELETE SET NULL,
+  -- se organizador e local for excluído, outro tem que assumir antes
+  id_organizador UUID REFERENCES organizadores(id) NOT NULL,
+  id_local UUID REFERENCES locais(id) NOT NULL,
   id_categoria UUID REFERENCES categorias(id),
   titulo TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
@@ -64,7 +65,7 @@ CREATE TABLE programacoes_evento (
   id_evento UUID REFERENCES eventos(id) ON DELETE CASCADE,
   inicio_em timestamptz NOT NULL,
   fim_em timestamptz,
-  titulo TEXT,
+  titulo TEXT NOT NULL,
   descricao TEXT,
   capacidade integer,
   criado_em timestamptz DEFAULT now(),
@@ -141,8 +142,9 @@ CREATE TABLE imagens_evento (
 CREATE TABLE favoritos (
   id_usuario UUID REFERENCES usuarios(id) ON DELETE CASCADE, -- se o usuário for excluído, apaga os favoritos dele
   id_evento UUID REFERENCES eventos(id) ON DELETE CASCADE,   -- se o evento for excluído, remove dos favoritos
-  criado_em timestamptz DEFAULT now(), -- data em que foi favoritado
-  tirado_em timestamptz 			   -- data que foi desfavoritado | a fins de controle, se nao curtir tirar. 
+  -- criado_em timestamptz DEFAULT now(), -- data em que foi favoritado
+  -- tirado_em timestamptz 			   -- data que foi desfavoritado | a fins de controle, se nao curtir tirar. 
   PRIMARY KEY (id_usuario, id_evento)
 );
+
 
