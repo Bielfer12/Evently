@@ -4,6 +4,8 @@ import com.backend.evently.config.jwt.JwtService;
 import com.backend.evently.dto.AuthResponseDto;
 import com.backend.evently.dto.LoginDto;
 import com.backend.evently.dto.RegisterDto;
+import com.backend.evently.model.Usuario;
+import com.backend.evently.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
