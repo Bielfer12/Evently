@@ -7,6 +7,8 @@ import com.backend.evently.dto.RegisterDto;
 import com.backend.evently.model.Usuario;
 import com.backend.evently.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,9 +20,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    @Lazy
+    private AuthenticationManager authenticationManager;
 
     public AuthResponseDto register(RegisterDto request) {
         if (repository.findByEmail(request.email()).isPresent()) {
