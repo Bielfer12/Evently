@@ -38,6 +38,10 @@ public class Organizador {
     @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evento> eventos = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
     @CreatedDate
     @Column(name = "criado_em", updatable = false)
     private Instant criadoEm;
