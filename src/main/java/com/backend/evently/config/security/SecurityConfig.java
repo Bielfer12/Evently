@@ -1,4 +1,4 @@
-package com.backend.evently.config;
+package com.backend.evently.config.security;
 
 import com.backend.evently.config.filter.JwtAuthenticationFilter;
 import com.backend.evently.model.Usuario;
@@ -38,10 +38,39 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+                        .requestMatchers("/actuator/health-check").permitAll()
+
+                        .requestMatchers("/v1/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categorias/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categorias/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/locais/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/locais/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/locais/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/locais/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/etiquetas/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/etiquetas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/etiquetas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/etiquetas/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/organizadores/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/organizadores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/organizadores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/organizadores/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+
+                        .requestMatchers("/api/v1/usuarios/me/**").hasAnyRole("USUARIO", "ADMIN")
 
                         .anyRequest().authenticated()
                 )

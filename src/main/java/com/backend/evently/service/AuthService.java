@@ -39,7 +39,7 @@ public class AuthService {
         usuario.setNome(request.nome());
         usuario.setEmail(request.email());
         usuario.setPassword(passwordEncoder.encode(request.password()));
-        usuario.setPapel("USUARIO");
+        usuario.setPapel("usuario");
 
         repository.save(usuario);
 

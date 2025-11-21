@@ -1,5 +1,7 @@
 package com.backend.evently.config.jwt;
 
+import com.backend.evently.model.Usuario;
+import com.backend.evently.repository.OrganizadorRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,6 +26,12 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long EXPIRATION_TIME;
 
+    private final OrganizadorRepository organizadorRepository;
+
+    public JwtService(OrganizadorRepository organizadorRepository) {
+        this.organizadorRepository = organizadorRepository;
+    }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -34,7 +42,18 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+
+        if (userDetails instanceof Usuario usuario) {
+            claims.put("role", usuario.getPapel());
+
+            organizadorRepository.findByUsuarioId(usuario.getId())
+                    .ifPresent(org ->
+                            claims.put("organizerId", org.getId().toString())
+                    );
+        }
+
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(
@@ -56,7 +75,7 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -80,5 +99,13 @@ public class JwtService {
 
     public long getExpirationTime() {
         return EXPIRATION_TIME;
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    public String extractOrganizerId(String token) {
+        return extractClaim(token, claims -> claims.get("organizerId", String.class));
     }
 }
