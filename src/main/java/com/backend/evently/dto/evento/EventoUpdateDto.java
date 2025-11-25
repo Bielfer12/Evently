@@ -1,6 +1,7 @@
 package com.backend.evently.dto.evento;
 
 import com.backend.evently.enums.StatusEventoEnum;
+import jakarta.validation.constraints.Min;
 
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public record EventoUpdateDto(
         String descricaoCurta,
         String descricao,
         StatusEventoEnum status,
-        Integer capacidade,
+        @Min(value = 1, message = "capacidade deve ser >= 1") Integer capacidade,
         String metadados,
         UUID idLocal,
         UUID idCategoria
