@@ -36,25 +36,26 @@ public class Evento {
     @Enumerated(EnumType.STRING)
     private StatusEventoEnum statusEventoEnum;
 
+    @Column(nullable = false)
     private Integer capacidade;
 
     private String metadados;
 
     @ManyToOne
-    @JoinColumn(name = "id_organizador")
+    @JoinColumn(name = "id_organizador", nullable = false)
     private Organizador organizador;
 
     @ManyToOne
-    @JoinColumn(name = "id_local")
+    @JoinColumn(name = "id_local", nullable = false)
     private Local local;
 
     @ManyToOne
-    @JoinColumn(name = "id_categoria")
+    @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 
     @CreatedBy
     @Column(name = "criado_por", updatable = false)
-    private UUID criadoPor;
+    private String criadoPor;
 
     @CreatedDate
     @Column(name = "criado_em", updatable = false)

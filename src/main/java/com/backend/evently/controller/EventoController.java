@@ -4,7 +4,9 @@ import com.backend.evently.dto.evento.EventoCreateDto;
 import com.backend.evently.dto.evento.EventoResponseDto;
 import com.backend.evently.dto.evento.EventoUpdateDto;
 import com.backend.evently.service.EventoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +21,14 @@ public class EventoController {
     private final EventoService eventoService;
 
     @PostMapping
-    public ResponseEntity<EventoResponseDto> create(@RequestBody EventoCreateDto dto) {
+    public ResponseEntity<EventoResponseDto> create(@Valid @RequestBody EventoCreateDto dto) {
         EventoResponseDto created = eventoService.createEvento(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EventoResponseDto> update(@PathVariable UUID id,
-                                                    @RequestBody EventoUpdateDto dto) {
+                                                    @Valid @RequestBody EventoUpdateDto dto) {
         EventoResponseDto updated = eventoService.updateEvento(id, dto);
         return ResponseEntity.ok(updated);
     }
@@ -38,12 +40,32 @@ public class EventoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventoResponseDto>> getAll() {
-        return ResponseEntity.ok(eventoService.getAll());
+    public ResponseEntity<Page<EventoResponseDto>> getAll(
+            @RequestParam(defaultValue = "-1") Integer pagina,
+            @RequestParam(defaultValue = "-1") Integer resultados,
+            @RequestParam(required = false) List<String> ordenar,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) UUID idCategoria,
+            @RequestParam(required = false) UUID idOrganizador
+    ) {
+        Page<EventoResponseDto> page = eventoService.getAll(pagina, resultados, ordenar, titulo, status, idCategoria, idOrganizador);
+        return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventoResponseDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(eventoService.getEventoById(id));
+    }
+
+    @GetMapping(value = "/exportacao-csv", produces = "text/csv")
+    public ResponseEntity<String> exportCsv() {
+        String csv = eventoService.exportEventosToCsv();
+
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "text/csv; charset=UTF-8")
+                .header("Content-Disposition", "attachment; filename=\"eventos.csv\"")
+                .body(csv);
     }
 }
