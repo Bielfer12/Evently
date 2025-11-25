@@ -1,5 +1,7 @@
 package com.backend.evently.config.security;
 
+import com.backend.evently.exception.HandleAuthenticationException;
+import com.backend.evently.exception.ResourceNotFoundException;
 import com.backend.evently.model.Usuario;
 import com.backend.evently.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,12 @@ public class CurrentUserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
-            throw new RuntimeException("Usuário não autenticado");
+            throw new HandleAuthenticationException("Usuário não autenticado");
         }
 
         String email = authentication.getName();
 
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 }

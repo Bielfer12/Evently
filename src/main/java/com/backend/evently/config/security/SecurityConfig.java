@@ -14,6 +14,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UsuarioRepository usuarioRepository;
+    private final String url = "/api/v1";
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -35,42 +37,45 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/exportacao-csv").hasRole("ADMIN")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/actuator/health-check").permitAll()
 
                         .requestMatchers("/v1/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categorias/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/categorias/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/categorias/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/categorias/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, url + "/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, url + "/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, url + "/categorias/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/locais/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/locais/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/locais/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/locais/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/locais/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, url + "/locais/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, url + "/locais/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, url + "/locais/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/etiquetas/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/etiquetas/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/etiquetas/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/etiquetas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/etiquetas/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, url + "/etiquetas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, url + "/etiquetas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, url + "/etiquetas/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/organizadores/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/organizadores/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/organizadores/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/organizadores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/organizadores/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, url + "/organizadores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, url + "/organizadores/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, url + "/organizadores/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/eventos/exportacao-csv").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
 
-                        .requestMatchers("/api/v1/usuarios/me/**").hasAnyRole("USUARIO", "ADMIN")
+                        .requestMatchers(url + "/usuarios/me/**").hasAnyRole("USUARIO", "ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -88,11 +93,8 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            Usuario usuario = (Usuario) usuarioRepository.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
-            return usuario;
-        };
+        return username -> (Usuario) usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
     }
 
     @Bean
