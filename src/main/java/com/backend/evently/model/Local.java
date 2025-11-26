@@ -1,8 +1,7 @@
 package com.backend.evently.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,31 +16,37 @@ import java.util.UUID;
 @Entity
 @Table(name = "locais")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Local {
 
     @Id
-    private UUID id = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false, unique = true)
+    private String slug;
+
+    @Column(columnDefinition = "TEXT")
     private String descricao;
 
     private String endereco;
-
     private String cidade;
-
     private String estado;
-
     private String pais;
-
     private Integer capacidade;
+
+    @Column(name = "criado_por")
+    private String criadoPor;
 
     @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evento> eventos = new ArrayList<>();
 
     @CreatedDate
-    @Column(name = "criado_em", updatable = false)
+    @Column(name = "criado_em", nullable = false, updatable = false)
     private Instant criadoEm;
 
     @LastModifiedDate
