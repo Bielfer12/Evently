@@ -39,7 +39,7 @@ public class Organizador {
     private List<Evento> eventos = new ArrayList<>();
 
     @OneToOne
-    @PrimaryKeyJoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
     @CreatedDate

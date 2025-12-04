@@ -36,7 +36,7 @@ public class Usuario implements UserDetails {
 
     private String papel;
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
     private Organizador organizador;
 
     @CreatedDate
