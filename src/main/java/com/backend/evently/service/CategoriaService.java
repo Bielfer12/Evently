@@ -51,7 +51,6 @@ public class CategoriaService {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
 
-        // Validação de duplicidade ao atualizar NOME
         if (dto.nome() != null && !dto.nome().equals(categoria.getNome())) {
             if (categoriaRepository.existsByNome(dto.nome())) {
                 throw new ConflictException("Já existe uma categoria com este nome");
@@ -59,7 +58,6 @@ public class CategoriaService {
             categoria.setNome(dto.nome());
         }
 
-        // Validação de duplicidade ao atualizar SLUG
         if (dto.slug() != null && !dto.slug().equals(categoria.getSlug())) {
             if (categoriaRepository.existsBySlug(dto.slug())) {
                 throw new ConflictException("Já existe uma categoria com este slug");
@@ -77,18 +75,14 @@ public class CategoriaService {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
 
-        // Nota: Se houver eventos vinculados a esta categoria, o banco retornará erro de Foreign Key.
-        // O ideal seria tratar isso com um try-catch ou verificar antes se existem eventos.
         categoriaRepository.delete(categoria);
     }
 
     public Page<CategoriaResponseDto> getAll(Integer pagina, Integer resultados, String busca) {
-        // Ordenação padrão por nome
         Sort sort = Sort.by("nome").ascending();
 
         List<Categoria> categorias = categoriaRepository.findAll(sort);
 
-        // Filtro simples em memória (ou poderia usar Specification/Query no Repository)
         if (busca != null && !busca.isBlank()) {
             String buscaLower = busca.toLowerCase();
             categorias = categorias.stream()
@@ -98,7 +92,6 @@ public class CategoriaService {
 
         int total = categorias.size();
 
-        // Paginação manual simples
         int pageNum = (pagina != null && pagina >= 0) ? pagina : 0;
         int pageSize = (resultados != null && resultados > 0) ? resultados : 10;
 
@@ -123,7 +116,6 @@ public class CategoriaService {
         return toResponseDto(categoria);
     }
 
-    // Método auxiliar para verificar se é Admin
     private void verificarPermissaoAdmin() {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
         if (!"admin".equalsIgnoreCase(usuarioLogado.getPapel())) {

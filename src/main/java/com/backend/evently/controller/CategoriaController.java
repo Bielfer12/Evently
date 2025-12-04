@@ -43,7 +43,7 @@ public class CategoriaController {
     public ResponseEntity<Page<CategoriaResponseDto>> getAll(
             @RequestParam(defaultValue = "0") Integer pagina,
             @RequestParam(defaultValue = "10") Integer resultados,
-            @RequestParam(required = false) String busca // Para filtrar por nome
+            @RequestParam(required = false) String busca
     ) {
         Page<CategoriaResponseDto> page = categoriaService.getAll(pagina, resultados, busca);
         return ResponseEntity.ok(page);
