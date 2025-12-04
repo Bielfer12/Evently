@@ -31,13 +31,11 @@ public class FavoritoService {
     public void adicionarFavorito(UUID idEvento) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
 
-        // Verifica se o evento existe
         Evento evento = eventoRepository.findById(idEvento)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
         FavoritoId favoritoId = new FavoritoId(usuarioLogado.getId(), evento.getId());
 
-        // Evita duplicidade
         if (favoritoRepository.existsById(favoritoId)) {
             throw new ConflictException("Este evento já está nos seus favoritos");
         }
@@ -49,13 +47,13 @@ public class FavoritoService {
     @Transactional
     public void removerFavorito(UUID idEvento) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
-
         FavoritoId favoritoId = new FavoritoId(usuarioLogado.getId(), idEvento);
 
-        Favorito favorito = favoritoRepository.findById(favoritoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Favorito não encontrado"));
+        if (!favoritoRepository.existsById(favoritoId)) {
+            throw new ResourceNotFoundException("Favorito não encontrado");
+        }
 
-        favoritoRepository.delete(favorito);
+        favoritoRepository.deleteById(favoritoId);
     }
 
     public boolean isFavorito(UUID idEvento) {
@@ -68,18 +66,14 @@ public class FavoritoService {
     public Page<EventoResponseDto> listarFavoritosDoUsuario(Integer pagina, Integer resultados) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
 
-        // Ajuste de paginação
         int pageNum = (pagina != null && pagina >= 0) ? pagina : 0;
         int pageSize = (resultados != null && resultados > 0) ? resultados : 10;
         Pageable pageable = PageRequest.of(pageNum, pageSize);
 
-        // Busca na tabela de favoritos e mapeia para o DTO de Evento
         return favoritoRepository.findAllByUsuarioId(usuarioLogado.getId(), pageable)
                 .map(favorito -> toEventoResponseDto(favorito.getEvento()));
     }
 
-    // Método auxiliar para converter Model -> DTO (Copiado/Adaptado do EventoService)
-    // Em um projeto real, idealmente isso estaria em um Mapper separado para evitar duplicação
     private EventoResponseDto toEventoResponseDto(Evento evento) {
         return new EventoResponseDto(
                 evento.getId(),

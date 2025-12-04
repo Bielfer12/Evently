@@ -17,28 +17,24 @@ public class FavoritoController {
 
     private final FavoritoService favoritoService;
 
-    // Adicionar um evento aos favoritos
     @PostMapping("/{idEvento}")
     public ResponseEntity<Void> adicionarFavorito(@PathVariable UUID idEvento) {
         favoritoService.adicionarFavorito(idEvento);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // Remover um evento dos favoritos
     @DeleteMapping("/{idEvento}")
     public ResponseEntity<Void> removerFavorito(@PathVariable UUID idEvento) {
         favoritoService.removerFavorito(idEvento);
         return ResponseEntity.noContent().build();
     }
 
-    // Verificar se um evento específico é favorito (útil para o botão de coração no front)
     @GetMapping("/{idEvento}/check")
     public ResponseEntity<Boolean> isFavorito(@PathVariable UUID idEvento) {
         boolean isFav = favoritoService.isFavorito(idEvento);
         return ResponseEntity.ok(isFav);
     }
 
-    // Listar todos os eventos favoritados pelo usuário logado
     @GetMapping
     public ResponseEntity<Page<EventoResponseDto>> listarMeusFavoritos(
             @RequestParam(defaultValue = "0") Integer pagina,

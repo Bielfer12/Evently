@@ -1,5 +1,6 @@
 package com.backend.evently.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +8,15 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Data // Gera Getters, Setters, Equals e HashCode (obrigatório para chaves compostas)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable // Diz pro Java: "Isso pode ser embutido dentro de outra classe como ID"
+@Embeddable
 public class FavoritoId implements Serializable {
+
+    @Column(name = "id_usuario")
     private UUID idUsuario;
+
+    @Column(name = "id_evento")
     private UUID idEvento;
 }

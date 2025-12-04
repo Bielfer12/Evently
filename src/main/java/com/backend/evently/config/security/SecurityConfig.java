@@ -75,6 +75,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, url + "/favoritos/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, url + "/favoritos/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, url + "/favoritos/**").authenticated()
+
                         .requestMatchers(url + "/usuarios/me/**").hasAnyRole("USUARIO", "ADMIN")
 
                         .anyRequest().authenticated()
