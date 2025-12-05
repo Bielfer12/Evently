@@ -9,6 +9,6 @@ public record ParticipacaoResponseDto(
         String tituloEvento,
         UUID idIngresso,
         String nomeIngresso,
-        String nomeParticipante, // Útil para o organizador ver quem comprou
+        String nomeParticipante,
         Instant dataInscricao
 ) {}

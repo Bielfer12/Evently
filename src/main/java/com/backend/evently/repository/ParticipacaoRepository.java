@@ -9,9 +9,7 @@ import java.util.UUID;
 
 public interface ParticipacaoRepository extends JpaRepository<Participacao, UUID> {
 
-    // Busca participações de um usuário (para a tela "Meus Ingressos")
     Page<Participacao> findAllByUsuarioId(UUID usuarioId, Pageable pageable);
 
-    // Busca participações de um evento (para o Organizador ver a lista de presença)
     Page<Participacao> findAllByEventoId(UUID eventoId, Pageable pageable);
 }

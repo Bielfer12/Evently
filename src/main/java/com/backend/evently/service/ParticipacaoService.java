@@ -7,9 +7,12 @@ import com.backend.evently.exception.ForbiddenException;
 import com.backend.evently.exception.ResourceNotFoundException;
 import com.backend.evently.model.Evento;
 import com.backend.evently.model.Ingresso;
+import com.backend.evently.model.Organizador;
 import com.backend.evently.model.Participacao;
 import com.backend.evently.model.Usuario;
+import com.backend.evently.repository.EventoRepository;
 import com.backend.evently.repository.IngressoRepository;
+import com.backend.evently.repository.OrganizadorRepository;
 import com.backend.evently.repository.ParticipacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,20 +30,19 @@ public class ParticipacaoService {
 
     private final ParticipacaoRepository participacaoRepository;
     private final IngressoRepository ingressoRepository;
+    private final EventoRepository eventoRepository;
+    private final OrganizadorRepository organizadorRepository;
     private final CurrentUserService currentUserService;
 
     @Transactional
     public ParticipacaoResponseDto registrarParticipacao(ParticipacaoCreateDto dto) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
 
-        // 1. Busca o ingresso
         Ingresso ingresso = ingressoRepository.findById(dto.idIngresso())
                 .orElseThrow(() -> new ResourceNotFoundException("Ingresso não encontrado"));
 
-        // 2. Pega o evento através do ingresso (garante consistência)
         Evento evento = ingresso.getEvento();
 
-        // 3. Cria a participação
         Participacao participacao = new Participacao();
         participacao.setUsuario(usuarioLogado);
         participacao.setIngresso(ingresso);
@@ -50,6 +52,7 @@ public class ParticipacaoService {
         return toResponseDto(salvo);
     }
 
+    @Transactional(readOnly = true)
     public Page<ParticipacaoResponseDto> listarMinhasParticipacoes(Integer pagina, Integer resultados) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
 
@@ -59,20 +62,23 @@ public class ParticipacaoService {
                 .map(this::toResponseDto);
     }
 
+    @Transactional(readOnly = true)
     public Page<ParticipacaoResponseDto> listarParticipantesPorEvento(UUID idEvento, Integer pagina, Integer resultados) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
         boolean isAdmin = "admin".equalsIgnoreCase(usuarioLogado.getPapel());
 
-        // Validação de Segurança: 
-        // Vamos checar se o usuário logado é o organizador DONO deste evento
+        Evento evento = eventoRepository.findById(idEvento)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
+
         if (!isAdmin) {
-            // Precisamos buscar o evento para saber quem é o dono, 
-            // mas como a query findByEventoId só traz participações, 
-            // vamos confiar que se a lista vier vazia, tudo bem, 
-            // mas se vier dados, validamos a permissão ou fazemos uma query extra no EventoRepository.
-            // Para simplificar e ser seguro, idealmente faríamos um eventoRepository.findById(idEvento) aqui.
-            // Mas vamos assumir que o frontend só chama isso se for o dono.
-            // (Num cenário real, injete o EventoRepository e valide se evento.getOrganizador() == usuarioLogado)
+            Organizador organizadorLogado = organizadorRepository.findByUsuarioId(usuarioLogado.getId())
+                    .orElseThrow(() -> new ForbiddenException("Você não tem perfil de organizador."));
+
+            UUID idOrganizadorDoEvento = evento.getOrganizador().getId();
+
+            if (!idOrganizadorDoEvento.equals(organizadorLogado.getId())) {
+                throw new ForbiddenException("Você não tem permissão para ver os participantes deste evento.");
+            }
         }
 
         Pageable pageable = PageRequest.of(pagina, resultados, Sort.by("criadoEm").descending());
@@ -88,7 +94,6 @@ public class ParticipacaoService {
         Participacao participacao = participacaoRepository.findById(idParticipacao)
                 .orElseThrow(() -> new ResourceNotFoundException("Participação não encontrada"));
 
-        // Só pode cancelar se for o dono da participação ou admin
         if (!isAdmin && !participacao.getUsuario().getId().equals(usuarioLogado.getId())) {
             throw new ForbiddenException("Você não tem permissão para cancelar esta participação");
         }
