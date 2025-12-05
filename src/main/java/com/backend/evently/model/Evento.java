@@ -45,11 +45,11 @@ public class Evento {
     @JoinColumn(name = "id_organizador", nullable = false)
     private Organizador organizador;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_local", nullable = false)
     private Local local;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 

@@ -13,12 +13,12 @@ public class Favorito {
     @EmbeddedId
     private FavoritoId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idEvento")
     @JoinColumn(name = "id_evento")
     private Evento evento;
