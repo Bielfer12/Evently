@@ -58,10 +58,6 @@ O **Evently** surge como uma solução de backend que:
 - **Build / Gerenciamento de Dependências**
   - Maven
 
-- **Containerização**
-  - Docker
-  - Docker Compose
-
 - **Outros**
   - UUID como chave primária nas entidades
   - DTOs para entrada/saída de dados
@@ -570,59 +566,6 @@ A API utiliza um formato padronizado para erros.
 
 ## Como Executar o Projeto Localmente
 
-### Opção 1 — Usando Docker Compose (recomendado)
-
-#### Pré-requisitos
-
-- Docker instalado
-- Docker Compose instalado
-
-#### Passo a passo
-
-1. Clonar o repositório:
-
-   ```bash
-   git clone https://github.com/Bielfer12/Evently.git
-   cd Evently
-   ```
-
-2. (Opcional) Criar um arquivo `.env` para as variáveis de ambiente:
-
-   ```env
-   POSTGRES_DB=evently
-   POSTGRES_USER=seu_usuario
-   POSTGRES_PASSWORD=sua_senha
-   JWT_SECRET=sua_chave_secreta_jwt
-   ```
-
-3. Subir os containers (aplicação e banco):
-
-   ```bash
-   docker-compose up --build
-   ```
-
-4. Acessar a API:
-
-   ```text
-   http://localhost:8080
-   ```
-
-5. Parar os containers:
-
-   ```bash
-   docker-compose down
-   ```
-
-   Para remover também os volumes (dados do banco):
-
-   ```bash
-   docker-compose down -v
-   ```
-
----
-
-### Opção 2 — Rodando localmente (sem Docker)
-
 #### Pré-requisitos
 
 - Java 17+
@@ -711,9 +654,3 @@ A API utiliza um formato padronizado para erros.
   ```
 
 - Retorna um arquivo CSV com os dados de eventos.
-
-### Containerização com Docker
-
-- `Dockerfile` para build da aplicação.
-- `docker-compose.yml` para orquestrar aplicação + banco.
-- Facilita setup do ambiente e deploy.
