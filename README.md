@@ -93,6 +93,20 @@ Gerencia o acesso ao sistema. Contém:
   - `ORGANIZADOR`  
   - `USUARIO`  
 
+### 🔵 **Participação**
+Registra a **inscrição ou compra de ingresso** de um usuário em um evento.  
+É a entidade associativa que conecta:
+- **Usuario**
+- **Evento**
+- **Ingresso**
+
+Utilizada para gerar um **histórico de presença e participação**.
+
+### 🔵 **Comentário**
+Permite a interação social na plataforma. Usuários podem:
+- Publicar opiniões e avaliações (notas) sobre eventos  
+- Responder comentários de outros usuários  
+
 ---
 
 ## 🚧 Limitações da Versão Atual
