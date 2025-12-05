@@ -43,8 +43,8 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/exportacao-csv").hasRole("ADMIN")
+                        .requestMatchers("/auth/**").permitAll()
 
                         .requestMatchers("/actuator/health-check").permitAll()
 
@@ -77,6 +77,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, url + "/favoritos/**").authenticated()
                         .requestMatchers(HttpMethod.POST, url + "/favoritos/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, url + "/favoritos/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, url + "/comentarios/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, url + "/comentarios/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, url + "/comentarios/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, url + "/comentarios/**").authenticated()
 
                         .requestMatchers(url + "/usuarios/me/**").hasAnyRole("USUARIO", "ADMIN")
 
