@@ -93,8 +93,12 @@ public class ComentarioService {
             throw new ForbiddenException("Você não tem permissão para editar este comentário");
         }
 
-        comentario.setConteudo(dto.conteudo());
-        comentario.setAvaliacao(dto.avaliacao());
+        if (dto.conteudo() != null) {
+            comentario.setConteudo(dto.conteudo());
+        }
+        if (dto.avaliacao() != null) {
+            comentario.setAvaliacao(dto.avaliacao());
+        }
 
         Comentario atualizado = comentarioRepository.save(comentario);
         return toResponseDto(atualizado);
