@@ -3,6 +3,8 @@ package com.backend.evently.service;
 import com.backend.evently.config.security.CurrentUserService;
 import com.backend.evently.dto.participacao.ParticipacaoCreateDto;
 import com.backend.evently.dto.participacao.ParticipacaoResponseDto;
+import com.backend.evently.enums.StatusEventoEnum;
+import com.backend.evently.exception.ConflictException;
 import com.backend.evently.exception.ForbiddenException;
 import com.backend.evently.exception.ResourceNotFoundException;
 import com.backend.evently.model.Evento;
@@ -42,6 +44,19 @@ public class ParticipacaoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Ingresso não encontrado"));
 
         Evento evento = ingresso.getEvento();
+
+        if (evento.getStatusEventoEnum() != StatusEventoEnum.PUBLICADO) {
+            throw new ConflictException("Não é possível participar de um evento cancelado");
+        }
+
+        boolean jaParticipa = participacaoRepository.existsByUsuarioIdAndEventoId(
+                usuarioLogado.getId(),
+                evento.getId()
+        );
+
+        if (jaParticipa) {
+            throw new ConflictException("Você já está participando deste evento");
+        }
 
         Participacao participacao = new Participacao();
         participacao.setUsuario(usuarioLogado);

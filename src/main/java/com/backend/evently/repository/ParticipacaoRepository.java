@@ -12,4 +12,6 @@ public interface ParticipacaoRepository extends JpaRepository<Participacao, UUID
     Page<Participacao> findAllByUsuarioId(UUID usuarioId, Pageable pageable);
 
     Page<Participacao> findAllByEventoId(UUID eventoId, Pageable pageable);
+
+    boolean existsByUsuarioIdAndEventoId(UUID usuarioId, UUID eventoId);
 }
