@@ -113,13 +113,17 @@ public class EventoService {
         if (dto.capacidade() != null) evento.setCapacidade(dto.capacidade());
         if (dto.metadados() != null) evento.setMetadados(dto.metadados());
 
-        Local local = localRepository.findById(dto.idLocal())
-                .orElseThrow(() -> new ResourceNotFoundException("Local não encontrado"));
-        evento.setLocal(local);
+        if (dto.idLocal() != null && !dto.idLocal().equals(evento.getLocal().getId())) {
+            Local local = localRepository.findById(dto.idLocal())
+                    .orElseThrow(() -> new ResourceNotFoundException("Local não encontrado"));
+            evento.setLocal(local);
+        }
 
-        Categoria categoria = categoriaRepository.findById(dto.idCategoria())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
-        evento.setCategoria(categoria);
+        if (dto.idCategoria() != null && !dto.idCategoria().equals(evento.getCategoria().getId())) {
+            Categoria categoria = categoriaRepository.findById(dto.idCategoria())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+            evento.setCategoria(categoria);
+        }
 
         Evento salvo = eventoRepository.save(evento);
         return toResponseDto(salvo);
