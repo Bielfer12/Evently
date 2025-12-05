@@ -68,18 +68,22 @@ public class IngressoService {
         ingressoRepository.delete(ingresso);
     }
 
+    @Transactional(readOnly = true)
     public List<IngressoResponseDto> listByEvento(UUID idEvento) {
+        eventoRepository.findById(idEvento)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
+
         return ingressoRepository.findByEventoId(idEvento).stream()
                 .map(this::toResponseDto)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public IngressoResponseDto getById(UUID id) {
         Ingresso ingresso = ingressoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingresso não encontrado"));
         return toResponseDto(ingresso);
     }
-
 
     private void validarPermissaoDonoDoEvento(Evento evento) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
