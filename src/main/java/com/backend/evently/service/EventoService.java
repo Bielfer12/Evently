@@ -316,8 +316,7 @@ public class EventoService {
         List<Evento> eventos = eventoRepository.findAll();
 
         StringBuilder sb = new StringBuilder();
-
-        sb.append("id;titulo;slug;status;capacidade;organizador;local;categoria;criadoEm;criadoPor;atualizadoEm\n");
+        sb.append("id;titulo;slug;status;capacidade;idOrganizador;idLocal;idCategoria;criadoEm;criadoPor;atualizadoEm\n");
 
         for (Evento evento : eventos) {
             sb.append(safe(evento.getId()))
@@ -326,21 +325,21 @@ public class EventoService {
                     .append(';')
                     .append(escape(evento.getSlug()))
                     .append(';')
-                    .append(evento.getStatusEventoEnum())
+                    .append(safe(evento.getStatusEventoEnum()))
                     .append(';')
-                    .append(evento.getCapacidade())
+                    .append(safe(evento.getCapacidade()))
                     .append(';')
-                    .append(evento.getOrganizador() != null ? escape(evento.getOrganizador().getNome()) : "")
+                    .append(evento.getOrganizador() != null ? safe(evento.getOrganizador().getId()) : "")
                     .append(';')
-                    .append(evento.getLocal() != null ? escape(evento.getLocal().getNome()) : "")
+                    .append(evento.getLocal() != null ? safe(evento.getLocal().getId()) : "")
                     .append(';')
-                    .append(evento.getCategoria() != null ? escape(evento.getCategoria().getNome()) : "")
+                    .append(evento.getCategoria() != null ? safe(evento.getCategoria().getId()) : "")
                     .append(';')
-                    .append(evento.getCriadoEm())
+                    .append(safe(evento.getCriadoEm()))
                     .append(';')
                     .append(escape(evento.getCriadoPor()))
                     .append(';')
-                    .append(evento.getAtualizadoEm() != null ? evento.getAtualizadoEm() : "")
+                    .append(evento.getAtualizadoEm() != null ? safe(evento.getAtualizadoEm()) : "")
                     .append('\n');
         }
 

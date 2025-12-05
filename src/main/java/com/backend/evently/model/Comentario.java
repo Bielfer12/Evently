@@ -35,7 +35,7 @@ public class Comentario {
     private String conteudo;
 
     @Column(name = "avaliacao")
-    private Short avaliacao; // 1 a 5 estrelas (opcional)
+    private Short avaliacao;
 
     @CreatedDate
     @Column(name = "criado_em", updatable = false)

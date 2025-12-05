@@ -39,6 +39,17 @@ public class EventoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(value = "/exportacao-csv", produces = "text/csv")
+    public ResponseEntity<String> exportCsv() {
+        String csv = eventoService.exportEventosToCsv();
+
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "text/csv; charset=UTF-8")
+                .header("Content-Disposition", "attachment; filename=\"eventos.csv\"")
+                .body(csv);
+    }
+
     @GetMapping
     public ResponseEntity<Page<EventoResponseDto>> getAll(
             @RequestParam(defaultValue = "-1") Integer pagina,
@@ -56,16 +67,5 @@ public class EventoController {
     @GetMapping("/{id}")
     public ResponseEntity<EventoResponseDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(eventoService.getEventoById(id));
-    }
-
-    @GetMapping(value = "/exportacao-csv", produces = "text/csv")
-    public ResponseEntity<String> exportCsv() {
-        String csv = eventoService.exportEventosToCsv();
-
-        return ResponseEntity
-                .ok()
-                .header("Content-Type", "text/csv; charset=UTF-8")
-                .header("Content-Disposition", "attachment; filename=\"eventos.csv\"")
-                .body(csv);
     }
 }
