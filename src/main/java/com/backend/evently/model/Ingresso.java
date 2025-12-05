@@ -22,17 +22,9 @@ public class Ingresso {
     @Column(nullable = false)
     private String nome;
 
-    // Relacionamento com Evento
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_evento", nullable = false)
     private Evento evento;
-
-    /* Campos comentados no SQL original:
-    private BigDecimal preco;
-    private Integer quantidade;
-    private Instant vendasInicio;
-    private Instant vendasFim;
-    */
 
     @CreatedDate
     @Column(name = "criado_em", updatable = false)

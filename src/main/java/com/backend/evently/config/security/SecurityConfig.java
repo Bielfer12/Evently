@@ -42,11 +42,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/exportacao-csv").hasRole("ADMIN")
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/actuator/health-check").permitAll()
 
-                        .requestMatchers("/v1/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/exportacao-csv").hasRole("ADMIN")
+
+                        .requestMatchers("/actuator/health-check").permitAll()
 
                         .requestMatchers(HttpMethod.GET, url + "/categorias/**").hasAnyRole("USUARIO", "ADMIN")
                         .requestMatchers(HttpMethod.POST, url + "/categorias/**").hasRole("ADMIN")
@@ -57,11 +57,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, url + "/locais/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, url + "/locais/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, url + "/locais/**").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, url + "/etiquetas/**").hasAnyRole("USUARIO", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, url + "/etiquetas/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, url + "/etiquetas/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, url + "/etiquetas/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, url + "/organizadores/**").hasAnyRole("USUARIO", "ADMIN")
                         .requestMatchers(HttpMethod.POST, url + "/organizadores/**").hasRole("ADMIN")
@@ -75,6 +70,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, url + "/eventos/**").hasAnyRole("USUARIO", "ADMIN")
 
+                        .requestMatchers(url + "/ingressos/**").authenticated()
+
+                        .requestMatchers(url + "/participacoes/**").authenticated()
+
                         .requestMatchers(HttpMethod.GET, url + "/favoritos/**").authenticated()
                         .requestMatchers(HttpMethod.POST, url + "/favoritos/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, url + "/favoritos/**").authenticated()
@@ -84,7 +83,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

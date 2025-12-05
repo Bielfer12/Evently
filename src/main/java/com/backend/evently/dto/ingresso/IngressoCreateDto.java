@@ -10,6 +10,4 @@ public record IngressoCreateDto(
 
         @NotNull(message = "O ID do evento é obrigatório")
         UUID idEvento
-
-        // Se descomentar preço/qtd no banco, adicione aqui
 ) {}

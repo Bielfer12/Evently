@@ -8,9 +8,11 @@ import com.backend.evently.exception.ForbiddenException;
 import com.backend.evently.exception.ResourceNotFoundException;
 import com.backend.evently.model.Evento;
 import com.backend.evently.model.Ingresso;
+import com.backend.evently.model.Organizador;
 import com.backend.evently.model.Usuario;
 import com.backend.evently.repository.EventoRepository;
 import com.backend.evently.repository.IngressoRepository;
+import com.backend.evently.repository.OrganizadorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +28,15 @@ public class IngressoService {
     private final IngressoRepository ingressoRepository;
     private final EventoRepository eventoRepository;
     private final CurrentUserService currentUserService;
+    private final OrganizadorRepository organizadorRepository;
 
     @Transactional
     public IngressoResponseDto createIngresso(IngressoCreateDto dto) {
-        // 1. Busca o evento
         Evento evento = eventoRepository.findById(dto.idEvento())
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
-        // 2. Valida permissão (Só o dono do evento ou admin pode criar ingressos)
         validarPermissaoDonoDoEvento(evento);
 
-        // 3. Cria o ingresso
         Ingresso ingresso = new Ingresso();
         ingresso.setNome(dto.nome());
         ingresso.setEvento(evento);
@@ -50,7 +50,6 @@ public class IngressoService {
         Ingresso ingresso = ingressoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingresso não encontrado"));
 
-        // Valida permissão no evento pai
         validarPermissaoDonoDoEvento(ingresso.getEvento());
 
         ingresso.setNome(dto.nome());
@@ -69,7 +68,6 @@ public class IngressoService {
         ingressoRepository.delete(ingresso);
     }
 
-    // Listagem pública (qualquer um pode ver os tipos de ingressos disponíveis)
     public List<IngressoResponseDto> listByEvento(UUID idEvento) {
         return ingressoRepository.findByEventoId(idEvento).stream()
                 .map(this::toResponseDto)
@@ -82,24 +80,19 @@ public class IngressoService {
         return toResponseDto(ingresso);
     }
 
-    // --- Métodos Auxiliares ---
 
     private void validarPermissaoDonoDoEvento(Evento evento) {
         Usuario usuarioLogado = currentUserService.getCurrentUser();
         boolean isAdmin = "admin".equalsIgnoreCase(usuarioLogado.getPapel());
 
-        if (isAdmin) return; // Admin pode tudo
+        if (isAdmin) return;
 
-        // Se não é admin, precisa ser organizador
-        if (usuarioLogado.getOrganizador() == null) {
-            throw new ForbiddenException("Você não tem perfil de organizador.");
-        }
+        Organizador organizadorLogado = organizadorRepository.findByUsuarioId(usuarioLogado.getId())
+                .orElseThrow(() -> new ForbiddenException("Você não tem perfil de organizador."));
 
-        // E precisa ser o organizador DESTE evento específico
         UUID idOrganizadorDoEvento = evento.getOrganizador().getId();
-        UUID idOrganizadorLogado = usuarioLogado.getOrganizador().getId();
 
-        if (!idOrganizadorDoEvento.equals(idOrganizadorLogado)) {
+        if (!idOrganizadorDoEvento.equals(organizadorLogado.getId())) {
             throw new ForbiddenException("Você não tem permissão para gerenciar ingressos deste evento.");
         }
     }

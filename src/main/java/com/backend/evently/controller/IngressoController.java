@@ -20,35 +20,29 @@ public class IngressoController {
 
     private final IngressoService ingressoService;
 
-    // Criar um tipo de ingresso para um evento
     @PostMapping
     public ResponseEntity<IngressoResponseDto> create(@Valid @RequestBody IngressoCreateDto dto) {
         IngressoResponseDto created = ingressoService.createIngresso(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // Listar todos os ingressos de um evento específico
-    // Ex: GET /api/v1/ingressos/evento/{idEvento}
     @GetMapping("/evento/{idEvento}")
     public ResponseEntity<List<IngressoResponseDto>> listByEvento(@PathVariable UUID idEvento) {
         return ResponseEntity.ok(ingressoService.listByEvento(idEvento));
     }
 
-    // Atualizar nome do ingresso
     @PutMapping("/{id}")
     public ResponseEntity<IngressoResponseDto> update(@PathVariable UUID id,
                                                       @Valid @RequestBody IngressoUpdateDto dto) {
         return ResponseEntity.ok(ingressoService.updateIngresso(id, dto));
     }
 
-    // Deletar ingresso
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         ingressoService.deleteIngresso(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Buscar ingresso por ID
     @GetMapping("/{id}")
     public ResponseEntity<IngressoResponseDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(ingressoService.getById(id));
