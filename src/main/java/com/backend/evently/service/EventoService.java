@@ -61,16 +61,14 @@ public class EventoService {
                     .orElseThrow(() -> new ResourceNotFoundException("Organizador não encontrado"));
             evento.setOrganizador(organizador);
         } else {
-            if (usuarioLogado.getOrganizador() == null) {
-                throw new ForbiddenException("Apenas organizadores podem criar eventos");
-            }
-            evento.setOrganizador(usuarioLogado.getOrganizador());
+            Organizador organizador = organizadorRepository.findByUsuarioId(usuarioLogado.getId())
+                    .orElseThrow(() -> new ForbiddenException("Apenas organizadores podem criar eventos"));
+            evento.setOrganizador(organizador);
         }
 
         Local local = localRepository.findById(dto.idLocal())
                 .orElseThrow(() -> new ResourceNotFoundException("Local não encontrado"));
         evento.setLocal(local);
-
 
         Categoria categoria = categoriaRepository.findById(dto.idCategoria())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
@@ -89,16 +87,14 @@ public class EventoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
         if (!isAdmin) {
-            if (usuarioLogado.getOrganizador() == null) {
-                throw new ForbiddenException("Apenas organizadores podem editar eventos");
-            }
+            Organizador organizadorDoUsuario = organizadorRepository.findByUsuarioId(usuarioLogado.getId())
+                    .orElseThrow(() -> new ForbiddenException("Apenas organizadores podem editar eventos"));
 
             UUID organizadorDoEvento = evento.getOrganizador() != null
                     ? evento.getOrganizador().getId()
                     : null;
-            UUID organizadorDoUsuario = usuarioLogado.getOrganizador().getId();
 
-            if (organizadorDoEvento == null || !organizadorDoEvento.equals(organizadorDoUsuario)) {
+            if (organizadorDoEvento == null || !organizadorDoEvento.equals(organizadorDoUsuario.getId())) {
                 throw new ForbiddenException("Você não tem permissão para editar este evento");
             }
         }
@@ -138,16 +134,14 @@ public class EventoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
         if (!isAdmin) {
-            if (usuarioLogado.getOrganizador() == null) {
-                throw new ForbiddenException("Apenas organizadores podem remover eventos");
-            }
+            Organizador organizadorDoUsuario = organizadorRepository.findByUsuarioId(usuarioLogado.getId())
+                    .orElseThrow(() -> new ForbiddenException("Apenas organizadores podem remover eventos"));
 
             UUID organizadorDoEvento = evento.getOrganizador() != null
                     ? evento.getOrganizador().getId()
                     : null;
-            UUID organizadorDoUsuario = usuarioLogado.getOrganizador().getId();
 
-            if (organizadorDoEvento == null || !organizadorDoEvento.equals(organizadorDoUsuario)) {
+            if (organizadorDoEvento == null || !organizadorDoEvento.equals(organizadorDoUsuario.getId())) {
                 throw new ForbiddenException("Você não tem permissão para remover este evento");
             }
         }

@@ -178,8 +178,6 @@ public class LocalService {
         return toResponseDto(local);
     }
 
-    // --- Métodos Auxiliares ---
-
     @SuppressWarnings({"rawtypes"})
     private Comparator<Local> createComparator(Sort sort) {
         return (l1, l2) -> {

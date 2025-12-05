@@ -42,7 +42,7 @@ public class Local {
     @Column(name = "criado_por")
     private String criadoPor;
 
-    @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "local")
     private List<Evento> eventos = new ArrayList<>();
 
     @CreatedDate

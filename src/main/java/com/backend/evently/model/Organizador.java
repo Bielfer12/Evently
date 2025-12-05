@@ -35,7 +35,7 @@ public class Organizador {
 
     private String site;
 
-    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "organizador")
     private List<Evento> eventos = new ArrayList<>();
 
     @OneToOne

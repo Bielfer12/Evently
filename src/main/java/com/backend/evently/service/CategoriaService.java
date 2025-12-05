@@ -87,7 +87,7 @@ public class CategoriaService {
             String buscaLower = busca.toLowerCase();
             categorias = categorias.stream()
                     .filter(c -> c.getNome().toLowerCase().contains(buscaLower))
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         int total = categorias.size();

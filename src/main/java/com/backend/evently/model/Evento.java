@@ -41,7 +41,7 @@ public class Evento {
 
     private String metadados;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_organizador", nullable = false)
     private Organizador organizador;
 

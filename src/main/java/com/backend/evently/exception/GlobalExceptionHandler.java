@@ -75,15 +75,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(buildBody(HttpStatus.BAD_REQUEST, message, req));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex, HttpServletRequest req) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(buildBody(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", req));
-    }
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex, HttpServletRequest req) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(buildBody(HttpStatus.UNAUTHORIZED, "Falha na autenticação: " + ex.getMessage(), req));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex, HttpServletRequest req) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(buildBody(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", req));
     }
 }

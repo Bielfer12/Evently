@@ -36,9 +36,6 @@ public class Usuario implements UserDetails {
 
     private String papel;
 
-    @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
-    private Organizador organizador;
-
     @CreatedDate
     @Column(name = "criado_em", updatable = false)
     private Instant criadoEm;
