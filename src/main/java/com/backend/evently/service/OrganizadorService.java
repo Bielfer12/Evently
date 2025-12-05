@@ -140,13 +140,17 @@ public class OrganizadorService {
             throw new ForbiddenException("Apenas administradores podem excluir organizadores");
         }
 
-        if (!organizadorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Organizador não encontrado");
+        Organizador organizador = organizadorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Organizador não encontrado"));
+
+        long totalEventos = eventoRepository.countByOrganizadorId(id);
+        if (totalEventos > 0) {
+            throw new ConflictException(
+                    "Não é possível excluir este organizador pois ele possui " + totalEventos + " evento(s) vinculado(s)"
+            );
         }
 
-        eventoRepository.deleteAllByOrganizadorId(id);
-
-        organizadorRepository.deleteById(id);
+        organizadorRepository.delete(organizador);
     }
 
     private boolean isAdmin(Usuario usuario) {

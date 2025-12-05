@@ -9,5 +9,5 @@ public interface EventoRepository extends JpaRepository<Evento, UUID> {
 
     boolean existsBySlug(String slug);
 
-    void deleteAllByOrganizadorId(UUID organizadorId);
+    long countByOrganizadorId(UUID organizadorId);
 }
